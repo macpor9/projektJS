@@ -1,6 +1,6 @@
-#Automat sprzedający napoje
+# Automat sprzedający napoje
 
-##Opis zadania
+## Opis zadania
   * Automat przechowuje informacje o monetach znajdujących się w nim (1, 2, 5,
     10, 20, 50gr, 1, 2, 5zł)
   * Automat przechowuje informacje o towarach znajdujących się w nim (przedmioty o
@@ -21,7 +21,7 @@
           jako reszta, odlicza wydany towar), odejmuje towar.
         - Nie może wydać: wyskakuje okienko z napisem "Tylko odliczona kwota".
    
-##Testy
+## Testy
 1. Sprawdzenie ceny jednego towaru - oczekiwana informacja o cenie.
 2. Wrzucenie odliczonej kwoty, zakup towaru - oczekiwany brak reszty.
 3. Wrzucenie większej kwoty, zakup towaru - oczekiwana reszta.
