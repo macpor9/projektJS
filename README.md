@@ -37,4 +37,4 @@
    suma sto razy 0.01+0.01+...+0.01 nie będzie równa 1.0). Płatności można dokonać
    za pomocą pętli for w interpreterze.
 
-[Project Repository](../master)
+[Project Repository](https://github.com/macpor9/projektJS)
