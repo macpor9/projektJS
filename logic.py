@@ -33,7 +33,7 @@ class Automat():
         self.__addedMoney = 0
         #key -   liczba groszy
         #value - liczba dostepnych monet o podanej wartosci
-        self.__moneys = {500: 5, 200: 0, 100:0, 50:0, 20:0, 10:0, 5:0, 2:0, 1:0}
+        self.__moneys = {500: 5, 200: 5, 100:5, 50:5, 20:5, 10:5, 5:5, 2:5, 1:5}
         self.__products = {30:Product("Fanta",5,250),
                          31:Product("Coca-cola",5,250),
                          32:Product("Sprite",5,250),
@@ -83,6 +83,7 @@ class Automat():
         return self.__products[id]
 
     def calculateChange(self):
+        print("change = ",self.__addedMoney)
         while self.__addedMoney>0:
             n = 0
             for nominal in self.__moneys.keys():
@@ -94,12 +95,13 @@ class Automat():
             if self.valueOfAllMoney()<=0 and self.__addedMoney>0:
                 self.cantGiveTheChange()
 
+
     def getAddedMoney(self):
         return self.__addedMoney
 
 
 
-    def buyProduct(self, id ):
+    def buyProduct(self, id):
         if self.__addedMoney<self.getProductByID(id).getPrice():
             self.viewPrice(id)
             self.productNotAvailable()
@@ -109,9 +111,10 @@ class Automat():
             self.productNotAvailable()
             print("war2")
             return
-        self.calculateChange()
+        self.__addedMoney-=self.getProductByID(id).getPrice()
         self.getProductByID(id).setCount(self.getProductByID(id).getCount()-1)
         self.viewTransaction()
+        self.calculateChange()
 
 
 def cantGiveTheChange():
@@ -131,9 +134,13 @@ def viewTransaction():
 
 a = Automat()
 a.setFuncitons(viewPrice,productNotAvailable,viewTransaction,cantGiveTheChange)
-a.addMoney(5)
+print("money value in machine", a.valueOfAllMoney())
+
+
+
+a.addMoney(200)
 a.addMoney(100)
-a.addMoney(500)
+a.addMoney(100)
 
 
 print("added money", a.getAddedMoney())
@@ -145,4 +152,4 @@ print(a.getProductByID(41))
 print("added money", a.getAddedMoney())
 print("money value in machine", a.valueOfAllMoney())
 
-
+print(a.getProductByID(42))
