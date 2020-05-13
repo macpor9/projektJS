@@ -57,7 +57,6 @@ class Automat():
                          50:Product("Lipton ice tea ZERO", 5, 300),
                          }
         self.cantGiveTheChange = None
-        self.cantGiveTheChange = None
         self.viewPrice = None
         self.productNotAvailable = None
         self.viewTransaction = None
@@ -132,24 +131,24 @@ def viewTransaction():
 
 
 
-a = Automat()
-a.setFuncitons(viewPrice,productNotAvailable,viewTransaction,cantGiveTheChange)
-print("money value in machine", a.valueOfAllMoney())
-
-
-
-a.addMoney(200)
-a.addMoney(100)
-a.addMoney(100)
-
-
-print("added money", a.getAddedMoney())
-print("money value in machine", a.valueOfAllMoney())
-
-a.buyProduct(41)
-
-print(a.getProductByID(41))
-print("added money", a.getAddedMoney())
-print("money value in machine", a.valueOfAllMoney())
-
-print(a.getProductByID(42))
+# a = Automat()
+# a.setFuncitons(viewPrice,productNotAvailable,viewTransaction,cantGiveTheChange)
+# print("money value in machine", a.valueOfAllMoney())
+#
+#
+#
+# a.addMoney(200)
+# a.addMoney(100)
+# a.addMoney(100)
+#
+#
+# print("added money", a.getAddedMoney())
+# print("money value in machine", a.valueOfAllMoney())
+#
+# a.buyProduct(41)
+#
+# print(a.getProductByID(41))
+# print("added money", a.getAddedMoney())
+# print("money value in machine", a.valueOfAllMoney())
+#
+# print(a.getProductByID(42))
