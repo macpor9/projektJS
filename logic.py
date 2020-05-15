@@ -1,3 +1,5 @@
+from utils import *
+
 class Product():
     def __init__(self,name,count,price):
         self.__name = name
@@ -31,9 +33,11 @@ class Product():
 class Automat():
     def __init__(self):
         self.__addedMoney = 0
-        #key -   liczba groszy
-        #value - liczba dostepnych monet o podanej wartosci
-        self.__moneys = {500: 5, 200: 5, 100:5, 50:5, 20:5, 10:5, 5:5, 2:5, 1:5}
+        # key -   liczba groszy
+        # value - liczba dostepnych monet o podanej wartosci
+        # self.__moneys = {500: 5, 200: 5, 100:5, 50:5, 20:5, 10:5, 5:5, 2:5, 1:5}
+        self.machineWallet = Wallet([x for x in nominals for j in range(5)])
+        self.userAddedWallet = Wallet()
         self.__products = {30:Product("Fanta",5,250),
                          31:Product("Coca-cola",5,250),
                          32:Product("Sprite",5,250),
@@ -69,30 +73,45 @@ class Automat():
         self.viewTransaction = viewTransaction
 
     def addMoney(self,moneyValue):
-        self.__addedMoney+=moneyValue
-        self.__moneys[moneyValue]+=1
+        self.userAddedWallet.addMoneyByValue(moneyValue)
+        self.__addedMoney = self.userAddedWallet.sum()
 
     def valueOfAllMoney(self):
-        retval = 0
-        for k,v in self.__moneys.items():
-            retval+=k*v
+        retval = self.userAddedWallet.sum() + self.machineWallet.sum()
         return retval
 
     def getProductByID(self,id):
         return self.__products[id]
 
+    # def calculateChange(self):
+    #     print("change = ",self.__addedMoney)
+    #     while self.__addedMoney>0:
+    #         n = 0
+    #         for nominal in self.__machineWallet.keys():
+    #             if self.__machineWallet[nominal]>0:
+    #                 if self.__addedMoney >= nominal > n:
+    #                     n = nominal
+    #         self.__addedMoney-=n
+    #         self.__machineWallet[n]-=1
+    #         if self.valueOfAllMoney()<=0 and self.__addedMoney>0:
+    #             self.cantGiveTheChange()
+
     def calculateChange(self):
         print("change = ",self.__addedMoney)
         while self.__addedMoney>0:
             n = 0
-            for nominal in self.__moneys.keys():
-                if self.__moneys[nominal]>0:
+            for nominal in nominals:
+                # print(nominal)
+                # print(self.machineWallet.certainCoinValueCount(nominal))
+                if self.machineWallet.certainCoinValueCount(nominal)>0:
                     if self.__addedMoney >= nominal > n:
                         n = nominal
             self.__addedMoney-=n
-            self.__moneys[n]-=1
+            self.machineWallet.deleteByCoinValue(n)
             if self.valueOfAllMoney()<=0 and self.__addedMoney>0:
                 self.cantGiveTheChange()
+
+
 
 
     def getAddedMoney(self):
@@ -112,15 +131,12 @@ class Automat():
             return
         self.__addedMoney-=self.getProductByID(id).getPrice()
         self.getProductByID(id).setCount(self.getProductByID(id).getCount()-1)
-        self.viewTransaction()
+        # self.viewTransaction()
         self.calculateChange()
 
 
 def cantGiveTheChange():
     print("tylko odliczona kwota")
-
-def viewPrice(id):
-    print(a.getProductByID(id))
 
 def productNotAvailable():
     print("product not available")
@@ -131,21 +147,34 @@ def viewTransaction():
 
 
 
-# a = Automat()
-# a.setFuncitons(viewPrice,productNotAvailable,viewTransaction,cantGiveTheChange)
-# print("money value in machine", a.valueOfAllMoney())
-#
-#
-#
-# a.addMoney(200)
-# a.addMoney(100)
-# a.addMoney(100)
-#
-#
-# print("added money", a.getAddedMoney())
-# print("money value in machine", a.valueOfAllMoney())
-#
-# a.buyProduct(41)
+a = Automat()
+print("money value in machine", a.valueOfAllMoney())
+
+
+
+a.addMoney(200)
+a.addMoney(100)
+a.addMoney(100)
+
+
+print("added money", a.getAddedMoney())
+print("money value in machine", a.valueOfAllMoney())
+
+print(a.userAddedWallet.sum())
+print(a.machineWallet.sum())
+print("added money", a.getAddedMoney())
+
+# a.calculateChange()
+print(Coin(500)==Coin(500))
+
+print(a.userAddedWallet.sum())
+print(a.machineWallet.sum())
+
+# print(a.machineWallet.certainCoinValueCount(200))
+# print(a.userAddedWallet.certainCoinValueCount(200))
+
+
+a.buyProduct(41)
 #
 # print(a.getProductByID(41))
 # print("added money", a.getAddedMoney())
