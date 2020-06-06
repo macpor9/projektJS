@@ -15,6 +15,7 @@ automat.addMoney(200)
 automat.addMoney(50)
 print(f"przed zakupem: {automat.getProductByID(35)}")
 print(f"wplacono {automat.getAddedMoney()/100}ZL, zakupiono towar o nr 35 i cenie {price35}ZL , ",end="")
+print("sadadsdsa")
 print(automat.buyProduct(35))
 print(f"po zakupie:    {automat.getProductByID(35)}")
 
