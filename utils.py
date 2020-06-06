@@ -19,8 +19,6 @@ class Coin:
         return self.value
 
 
-
-
 class Wallet:
     def __init__(self,moneyValuesList = []):
         self.coins = [Coin(x) for x in moneyValuesList]
@@ -52,11 +50,6 @@ class Wallet:
         self.__index-=1
         return self.coins[self.__index]
 
-    def delete(self, coin):
-        for i in self.coins:
-            if i.getValue() is coin:
-                self.coins.remove(i)
-                return i
 
     def deleteByCoinValue(self,value):
         for c in self.coins:

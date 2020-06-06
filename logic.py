@@ -6,17 +6,11 @@ class Product:
         self.__count = count
         self.__price = price
 
-    def getName(self):
-        return self.__name
-
     def getCount(self):
         return self.__count
 
     def getPrice(self):
         return self.__price
-
-    def setName(self,name):
-        self.__name = name
 
     def setCount(self,count):
         self.__count = count
@@ -25,7 +19,7 @@ class Product:
         self.__price = price
 
     def __str__(self):
-        return "{} price: {} count: {}".format(self.__name, self.__price, self.__count)
+        return f"{self.__name} price: {self.__price/100} count: {self.__count}"
 
     def __repr__(self):
         return self.__str__()
@@ -60,7 +54,6 @@ class Automat:
 
 
     def addMoney(self,moneyValue):
-        # print(f"wrzucono {moneyValue/100}ZL")
         self.userAddedWallet.addMoneyByValue(moneyValue)
         self.__addedMoney = self.userAddedWallet.sum()
 
@@ -69,11 +62,12 @@ class Automat:
         return retval
 
     def getProductByID(self,id):
+        if id not in self.__products.keys():
+            raise WrongProductIdException
         return self.__products[id]
 
-
     def calculateChange(self):
-        print(f"reszta = {self.__addedMoney/100}ZL")
+        change = f"reszta = {self.__addedMoney/100}ZL"
         while self.__addedMoney>0:
             n = 0
             for nominal in nominals:
@@ -87,11 +81,10 @@ class Automat:
         for m in self.userAddedWallet.coins:
             self.machineWallet.addMoney(m)
         self.userAddedWallet.coins.clear()
+        return change
 
     def getAddedMoney(self):
         return self.__addedMoney
-
-
 
     def buyProduct(self, id):
         if id not in self.__products.keys():
@@ -102,16 +95,5 @@ class Automat:
             raise ProductNotAvailableException
         self.__addedMoney-=self.getProductByID(id).getPrice()
         self.getProductByID(id).setCount(self.getProductByID(id).getCount()-1)
-        self.calculateChange()
-
-
-def cantGiveTheChange():
-    print("tylko odliczona kwota")
-
-def productNotAvailable():
-    print("product not available")
-
-def viewTransaction():
-    print("kupiono produkt: ")
-
-
+        change = self.calculateChange()
+        return change

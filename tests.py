@@ -2,8 +2,10 @@ from logic import Automat
 from exceptions import *
 
 
-print("------------------------test1------------------------")
 automat = Automat()
+
+
+print("------------------------test1------------------------")
 price35 = automat.getProductByID(35).getPrice()/100
 print(f"cena towaru o numerze 35: {price35}ZL")
 
@@ -25,15 +27,8 @@ automat.buyProduct(35)
 print(f"po zakupie:    {automat.getProductByID(35)}")
 
 
+
 print("\n\n------------------------test4------------------------")
-automat.addMoney(500)
-try:
-    automat.buyProduct(52)
-except WrongProductIdException:
-    print("zly numer produktu")
-
-
-print("\n\n------------------------test5------------------------")
 for i in range(6):
     automat.addMoney(500)
     try:
@@ -41,6 +36,14 @@ for i in range(6):
         automat.buyProduct(50)
     except ProductNotAvailableException:
         print("produkt niedostepny")
+
+
+print("\n\n------------------------test5------------------------")
+try:
+    price54 = automat.getProductByID(54).getPrice() / 100
+    print(f"cena towaru o numerze 35: {price54}ZL")
+except WrongProductIdException:
+    print("zly numer produktu")
 
 
 print("\n\n------------------------test6------------------------")
