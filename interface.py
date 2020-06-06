@@ -1,37 +1,34 @@
 import tkinter as tk
+import logic
+from exceptions import *
 
 class Application(tk.Frame):
 
-    def __init__(self, master=None,):
+    def __init__(self, master=None, automat = logic.Automat()):
         super().__init__(master)
+        self.automat = automat
         self.addedMoneyNumber = 0
         self.choosenProductNumber = ""
-        self.canvas = tk.Canvas(master,width = 600, height = 800, bg = 'pink')
+        self.canvas = tk.Canvas(master,width = 600, height = 500, bg = 'pink')
         self.nominals = [1,2,5,10,20,50,100,200,500]
-        self.moneyButtons = [tk.Button(self.canvas, text = str(x/100)+"zl", fg = 'red', bg = 'blue') for x in self.nominals]
-        self.productNumberButtons = [tk.Button(self.canvas, text = x, fg = 'red', bg = 'blue') for x in range(0,10)]
-        self.cancelButton = tk.Button(self.canvas, text = "get money back", fg = 'red', bg = 'blue')
-        self.addedMoney = tk.Label(master, text = "wrzucono           " + str(self.addedMoneyNumber / 100) + "zl", fg ='green', font = ("Helvetica", 16), bg = 'pink', anchor = tk.W)
-        self.choosenProduct = tk.Label(master, text = "wybrany numer:  0" + self.choosenProductNumber, fg ='green', font = ("Helvetica", 16), bg = 'pink', anchor = tk.W)
+        self.moneyButtons = [tk.Button(self.canvas, text = str(x/100)+"zl", fg = 'red', bg = 'blue',command = lambda x=x: self.moneyButtonFun(x)) for x in self.nominals]
+        self.productNumberButtons = [tk.Button(self.canvas, text = x, fg = 'red', bg = 'blue',command = lambda x=x: self.productNumberButtonFun(x)) for x in range(0,10)]
+        self.cancelButton = tk.Button(self.canvas, text = "cancel", fg = 'red', bg = 'blue', command = lambda: self.cancelButtonFun())
+        self.buyButton = tk.Button(self.canvas, text = "buy", fg = 'red', bg = 'blue', command = lambda: self.buyButtonFun())
+        self.addedMoney = tk.Label(master, text = f"wrzucono      {str(self.addedMoneyNumber / 100)} zl", fg ='black', font = ("Helvetica", 16), bg = 'cornflowerblue', anchor = tk.W)
+        self.choosenProduct = tk.Label(master, text = f"wybrany nr:    {self.choosenProductNumber}" , fg ='black', font = ("Helvetica", 16), bg = 'cornflowerblue', anchor = tk.W)
+        self.screen = tk.Label(master,bg = 'cornflowerblue')
+        self.viewProductInfo = tk.Label(master, text = "")
         self.master = master
         self.pack()
         self.create_widgets()
 
-    #     self.moneyButtonLogic = None
-    #     self.productNumberButtonLogic = None
-    #     self.cancelButtonlogic= None
-    #
-    #
-    # def setFuncitons(self,moneyButtonLogic,productNumberButtonLogic,cancelButtonLogic ):
-    #     self.moneyButtonLogic = moneyButtonLogic
-    #     self.productNumberButtonLogic = productNumberButtonLogic
-    #     self.cancelButtonlogic = cancelButtonLogic
-
     def refreshTextLabels(self):
-        self.addedMoney['text'] = "wrzucono           " + str(self.addedMoneyNumber / 100) + "zl"
-        self.choosenProduct['text'] = "wybrany numer:  " + self.choosenProductNumber
+        self.addedMoney['text'] = f"wrzucono      {str(self.addedMoneyNumber / 100)} zl"
+        self.choosenProduct['text'] = f"wybrany nr:    {self.choosenProductNumber}"
 
     def moneyButtonFun(self,amount):
+        self.automat.addMoney(amount)
         self.addedMoneyNumber+=amount
         self.refreshTextLabels()
 
@@ -44,38 +41,53 @@ class Application(tk.Frame):
         self.addedMoneyNumber = 0
         self.choosenProductNumber = ""
         self.refreshTextLabels()
+        self.automat.calculateChange()
+
+
+    def buyButtonFun(self):
+        try:
+            if len(self.choosenProductNumber)<1:
+                raise NoProductIdException()
+            self.automat.buyProduct(int(self.choosenProductNumber))
+            self.addedMoneyNumber = 0
+            self.choosenProductNumber = ""
+            self.refreshTextLabels()
+        except WrongProductIdException:
+            print("zly numer produktu")
+            self.choosenProductNumber = ""
+        except NoProductIdException:
+            print("wybierz numer produktu")
+        except ProductNotAvailableException:
+            print("produkt niedostepny")
+        except NotEnoughMoneyException:
+            print("niewystarczajaca liczba monet")
+
+
+        self.refreshTextLabels()
 
 
     def create_widgets(self):
         self.addedMoney.pack()
         self.choosenProduct.pack()
         width = float(self.canvas['width'])
-
-
+        mnbtX,mnbtY = 75,200
+        pnbtX,pnbtY = 345,200
         for i in range(9):
-            mnbtX,mnbtY = 75,300
-            pnbtX,pnbtY = 345,300
-            self.moneyButtons[i].place(x =mnbtX+i//3*width/10, y = mnbtY+i%3*50,width = 50, height = 30 )
-            print(mnbtX+i//3*width/10, mnbtY+i%3*50)
-            self.productNumberButtons[i + 1].place(x =pnbtX+i//3*width/10, y = pnbtY+i%3*50,width = 50, height = 30 )
-        self.productNumberButtons[0].place(x =405, y = 450,width = 50, height = 30 )
-        self.addedMoney.place(x = 50,y = 100,width = 250, height = 30)
-        self.choosenProduct.place(x = 50, y = 50, width = 250, height = 30)
-
-        self.cancelButton.place(x = 110,y = 450,width = 100, height = 30)
-
-        for n in self.nominals:
-            self.moneyButtons[self.nominals.index(n)]['command'] = lambda n=n: self.moneyButtonFun(n)
-            self.productNumberButtons[self.nominals.index(n)]['command'] = lambda n=n: self.productNumberButtonFun(self.nominals.index(n))
-        self.cancelButton['command'] = lambda n=n: self.cancelButtonFun()
-
-
-
+            self.moneyButtons[i].place(x =mnbtX+i%3*width/10, y = mnbtY+i//3*50,width = 50, height = 30 )
+            self.productNumberButtons[i + 1].place(x =pnbtX+i%3*width/10, y = pnbtY+i//3*50,width = 50, height = 30 )
+        self.productNumberButtons[0].place(x =pnbtX+60, y = pnbtY+150,width = 50, height = 30 )
+        self.addedMoney.place(x = 50,y = 90,width = 250, height = 40)
+        self.choosenProduct.place(x = 50, y = 50, width = 250, height = 40)
+        self.cancelButton.place(x = mnbtX,y = mnbtY+150,width = 50, height = 30)
+        self.buyButton.place(x = mnbtX+120, y = mnbtY+150, width = 50, height = 30)
+        self.screen.place(x = 300,y = 50, width = 250, height = 80)
 
         self.canvas.pack()
 
 
+root = tk.Tk()
+root.title("Automat")
+app = Application(master=root)
+app.mainloop()
 
-# root = tk.Tk()
-# app = Application(master=root)
-# app.mainloop()
+print(app.automat.getProductByID(35).getPrice())

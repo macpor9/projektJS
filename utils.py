@@ -19,10 +19,13 @@ class Coin:
         return self.value
 
 
+
+
 class Wallet:
     def __init__(self,moneyValuesList = []):
         self.coins = [Coin(x) for x in moneyValuesList]
         self.nominals = nominals
+        self.__index  = len(self.coins)
 
     def addMoney(self, moneta):
         if isinstance(moneta, Coin):
@@ -35,11 +38,19 @@ class Wallet:
         self.addMoney(Coin(value))
 
     def sum(self):
-        sum = 0
+        suma = 0
         for m in self.coins:
-            sum += m.getValue()
-        return sum
+            suma += m.getValue()
+        return suma
 
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.__index == 0:
+            raise StopIteration
+        self.__index-=1
+        return self.coins[self.__index]
 
     def delete(self, coin):
         for i in self.coins:
@@ -53,35 +64,9 @@ class Wallet:
                 self.coins.remove(c)
                 break
 
-        # self.delete(Coin(value))
-
     def certainCoinValueCount(self,value):
-        sum = 0
+        suma = 0
         for c in self.coins:
             if c.getValue() == value:
-                sum+=1
-        return sum
-
-        # return self.coins.count(Coin(value))
-
-
-
-# a = Wallet([200,100])
-# a.addMoneyByValue(500)
-# a.addMoneyByValue(500)
-# print(a.sum())
-# print(a.coins[1])
-# print(a.certainCoinValueCount(500))
-#
-# c1 = Coin(500)
-# c2 = Coin(200)
-#
-# lista = [c1,c2]
-# print(lista.count(Coin(200)))
-
-#
-# print("ss")
-#
-# moneys = Wallet([x for x in nominals for j in range(5)])
-# print("dd")
-# print(moneys.sum())
+                suma+=1
+        return suma
